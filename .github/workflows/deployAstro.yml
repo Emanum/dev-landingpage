@@ -1,4 +1,4 @@
-name: buildAstro
+name: deployAstroDev
 on:
   push:
     branches:
@@ -18,7 +18,7 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       -
-        name: Login to DockerHub
+        name: Login to Docker Repository
         uses: docker/login-action@v2
         with:
           registry: docker-registry.emanum.dev
@@ -32,4 +32,11 @@ jobs:
         run: npm install
       - name: build astro 
         run: npm run build
+      - name: Build image and push to Docker Registry 
+        uses: docker/build-push-action@v2
+        with:
+          context: ./astro
+          tags: |
+            docker-registry.emanum.dev/dev-landingpage:latest
+          push: true
       
