@@ -39,4 +39,24 @@ jobs:
           tags: |
             docker-registry.emanum.dev/dev-landingpage:latest
           push: true
+      - name: deploy to portainer
+        uses: LGinC/portainer-stack-deploy@master
+        with: 
+          serverurl: https://portainer.emanum.dev
+          username: ${{ secrets.PORTAINER_USERNAME }}
+          password: ${{ secrets.PORTAINER_PASSWORD }}
+          endpointId: 1
+          stackname: portfolio-page
+          imagenames: |
+              docker-registry.emanum.dev/dev-landingpage
+          docker_compose: |
+            version: '3'
+            services:
+              devtest:
+                image: docker-registry.emanum.dev/dev-landingpage:latest
+                restart: unless-stopped
+            networks:
+              default:
+                name: nginx_reverse_proxy
+                external: true   
       
