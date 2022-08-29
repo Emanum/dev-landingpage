@@ -1,10 +1,10 @@
-name: deployAstroDev
+name: deployAstroStable
 on:
   push:
     branches:
       - 'master'
 jobs:
-  deploy-dev:
+  deploy-stable:
     runs-on: ubuntu-latest
     environment: emanum.dev
     defaults:
