@@ -4,7 +4,7 @@ import Footer from '../components/Footer/index.jsx';
 import Nav from '../components/Nav/index.jsx';
 import PortfolioPreview from '../components/PortfolioPreview/index.jsx';
 
-const projects = (await Astro.glob('./project/**/*.md'))
+const projects = (await Astro.glob('./project/**/*.md*'))
 	.filter(({ frontmatter }) => !!frontmatter.publishDate)
 	.sort(
 		(a, b) =>
@@ -15,8 +15,8 @@ const projects = (await Astro.glob('./project/**/*.md'))
 <html lang="en">
 	<head>
 		<MainHead
-			title="All Projects | Jeanine White"
-			description="Learn about Jeanine White's most recent projects"
+			title="All Projects | Manuel Eiweck"
+			description="Learn about Manuel Eiweck's most recent projects"
 		/>
 		<style lang="scss">
 			.grid {

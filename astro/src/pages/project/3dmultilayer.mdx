@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/project.astro
+title: 3D Multilayer Visualization
+client: Self
+publishDate: 2021-04-01 00:00:00
+img: /assets/3dmultilayer/conceptScreenshotMediumDataset.png
+description: |
+  Developed for my bachelor's thesis this projects uses state-of-the-art visualization techniques to render a hierarchical multi-layer datasets in VR directly in the browsers.
+tags:
+  - dev
+  - visualization
+  - virtual reality
+---
+
+## Immersive Exploration of Hierarchical Networks in VR
+The motivation for this project was to enable visualization of hierarchical multi-layer datasets in a VR environment. We believe, that this can improve the visual clutter for large node-links graphs as seen here. The set goals for that project were:
+
+* Support any number of hierarchical layers.
+* Use the advantages of immersive analytics for hierarchical network exploration.
+* Provide support for room scale,standing and seated experience for maximum flexibility.
+* Provide a flexible navigation through the graph.
+* Intuitive interaction methods.
+
+The complete thesis can be downloaded [here](/assets/3dmultilayer/eiweck-hnv-2021-thesis.pdf)
+. For information about the publication see [here](https://www.cg.tuwien.ac.at/research/publications/2021/eiweck-hnv-2021)
+
+## Features 
+To achieve the proclaimed goals our application focuses on these features:
+
+* Automatic creation of a force based node layout at runtime.
+* Hierarchical nested layout with transparent nodes.
+* Two Navigation Methods:
+  * Free flying
+   * Animated teleport
+* Intuitive filtering of the displayed links by a virtual laser pointer.
+* Adaptable flying speed and scale of the virtual scene
+
+
+## Getting Started!
+To start the visualization simply click on one of the provided demo datasets. The application starts in the desktop mode. To enter the VR mode click the VR icon in the bottom right corner.
+
+* [Small Dataset (774 nodes, 387 links)](https://3dmultilayer.emanum.dev/smallDataSet/index.html) 
+* [Medium Dataset (1k nodes, 2k links)](https://3dmultilayer.emanum.dev/mediumDataSet/index.html)  
+* [Large Dataset (1.5k nodes, 3.1k links)](https://3dmultilayer.emanum.dev/largeDataSet/index.html)   
+* [Dataset with 6 hierarchical layers](https://3dmultilayer.emanum.dev/largeHierarchicalLayersDataSet/index.html) 
+* [Experimental Oculus version](https://3dmultilayer.emanum.dev/experimentalOculus/index.html) 
+
+### Technical requirements
+
+The application is build using A-Frame and the WebVR spec. It can be used with and without an VR headset. 
+
+* To use it without an VR headset simply click on any dataset.
+* Currently only Firefox supports the WebVR Spec on Windows. Therefore please switch to Firefox if you want to try out the VR version.
+The visualization is optimized for the HTC Vive VR Headset.
+
+## VR - Controls
+
+![Controller Mapping](/assets/3dmultilayer/controllerMapping.jpg "Controller Mapping")
+
+
+## Desktop - Controls
+
+* WASD - free fly
+* Shift - increase fly speed (press multiple times, hold not supported)
+* Strg - decrease fly speed (press multiple times, hold not supported)
+* Mouse click - animated Teleport to pointed node
+* Spacebar - animated Teleport to parent Node
+* m - filter links for node
+* l - disable/enable automatic link filtering
+* + - upscale scene (not noticeable in desktop mode)
+* - - upscale scene (not noticeable in desktop mode)
+
+
+## Credits
+
+**Author:** Manuel Eiweck e01633012@student.tuwien.ac.at\
+**Advisor:** Univ.Ass. Dr.techn. Manuela Waldner, MSc. waldner@cg.tuwien.ac.at\
+**Assistance:**: Dipl.-Ing. Dr.techn. Johannes Sorger sorger@csh.ac.at and Dipl.-Ing. Wolfgang Knecht knecht@csh.ac.at\
+Thanks to my friend Thomas Jakli and Lars Müller for providing feedback of the visualization.
+
