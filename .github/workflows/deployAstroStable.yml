@@ -2,7 +2,7 @@ name: deployAstroDev
 on:
   push:
     branches:
-      - 'develop'
+      - 'master'
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
         with:
           context: ./astro
           tags: |
-            docker-registry.emanum.dev/dev-landingpage:latest
+            docker-registry.emanum.dev/dev-landingpage:stable
           push: true
       - name: deploy to portainer
         uses: LGinC/portainer-stack-deploy@master
@@ -48,7 +48,7 @@ jobs:
           endpointId: 2
           stackname: portfolio-page
           imagenames: |
-              docker-registry.emanum.dev/dev-landingpage:latest
+              docker-registry.emanum.dev/dev-landingpage:stable
           docker_compose: |
             version: '3'
             services:
