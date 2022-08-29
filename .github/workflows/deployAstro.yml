@@ -6,6 +6,7 @@ on:
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
+    environment: emanum.dev
     defaults:
       run:
         working-directory: ./astro
