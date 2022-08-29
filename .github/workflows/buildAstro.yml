@@ -1,0 +1,17 @@
+name: buildAstro
+on: [push]
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./astro
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: npm install 
+        run: npm install
+      - name: build astro 
+        run: npm run build
