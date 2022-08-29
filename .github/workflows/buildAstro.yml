@@ -17,10 +17,9 @@ jobs:
         run: npm run build
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r dist.zip dist
+          args: zip -qq -r dist.zip astro/dist
       - name: Upload generated PDF 
         uses: actions/upload-artifact@v1
         with:
           name: dev-landingpage
           path: dist.zip
-          
