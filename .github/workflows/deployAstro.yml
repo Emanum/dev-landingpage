@@ -48,7 +48,7 @@ jobs:
           endpointId: 2
           stackname: portfolio-page
           imagenames: |
-              docker-registry.emanum.dev/dev-landingpage
+              docker-registry.emanum.dev/dev-landingpage:latest
           docker_compose: |
             version: '3'
             services:
