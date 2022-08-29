@@ -1,7 +1,7 @@
 name: buildAstro
 on: [push]
 jobs:
-  check-bats-version:
+  build-astro:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -15,3 +15,12 @@ jobs:
         run: npm install
       - name: build astro 
         run: npm run build
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r dist.zip dist
+      - name: Upload generated PDF 
+        uses: actions/upload-artifact@v1
+        with:
+          name: dev-landingpage
+          path: dist.zip
+          
