@@ -5,6 +5,7 @@ import Button from '../components/Button/index.jsx';
 import Nav from '../components/Nav/index.jsx';
 import Footer from '../components/Footer/index.jsx';
 import PortfolioPreview from '../components/PortfolioPreview/index.jsx';
+import { TypeAnimation } from 'react-type-animation';
 
 // Data Fetching: List all Markdown posts in the repo.
 const projects = await Astro.glob('./project/**/*.md*');
@@ -192,9 +193,21 @@ const featuredProject = projects[0];
 			<div class="gradient"></div>
 			<div class="gradient2"></div>
 			<div class="overlay">
-				<h1 class="title">
-					<!-- <small class="subtitle">The personal site of</small> -->
-					Manuel Eiweck
+				<h1 class="title" style={{ height: '1.5em' }}>
+					<TypeAnimation client:idle
+						sequence={[
+							500,
+							'Manuel Eiweck',
+							3000,
+							'Emanum',
+							3000,
+							'Manuel Eiweck',
+						]}
+						speed={1}
+						wrapper="div"
+						cursor={true}
+						repeat={false}
+					/>
 				</h1>
 				<div>
 					<span class="role">Software Developer</span>&nbsp;
