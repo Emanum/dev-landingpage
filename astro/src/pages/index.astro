@@ -6,6 +6,7 @@ import Nav from '../components/Nav/index.jsx';
 import Footer from '../components/Footer/index.jsx';
 import PortfolioPreview from '../components/PortfolioPreview/index.jsx';
 import { TypeAnimation } from 'react-type-animation';
+import CubeBackground from '../components/threejs/cubeBackground.jsx';
 
 // Data Fetching: List all Markdown posts in the repo.
 const projects = await Astro.glob('./project/**/*.md*');
@@ -193,6 +194,7 @@ const featuredProject = projects[0];
 			<div class="gradient"></div>
 			<div class="gradient2"></div>
 			<div class="overlay">
+				<CubeBackground client:idle/>
 				<h1 class="title" style={{ height: '1.5em' }}>
 					<TypeAnimation client:idle
 						sequence={[
@@ -206,7 +208,6 @@ const featuredProject = projects[0];
 						speed={1}
 						wrapper="div"
 						cursor={true}
-						repeat={false}
 					/>
 				</h1>
 				<div>

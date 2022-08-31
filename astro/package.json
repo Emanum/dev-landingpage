@@ -19,6 +19,7 @@
     "sass": "^1.52.2"
   },
   "dependencies": {
+    "@react-three/fiber": "^8.6.0",
     "preact": "^10.7.3",
     "react-type-animation": "^2.1.0"
   }
