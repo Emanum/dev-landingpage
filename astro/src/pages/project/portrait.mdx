@@ -1,0 +1,44 @@
+---
+layout: ../../layouts/project.astro
+title: Portrait
+client: Treskon GmbH
+publishDate: 2023-03-18
+description: |
+    Portrait is a low-code platform for building flexible and dynamic web applications to display, search, filter, and even modify existing datasets – all in one place!
+tags:
+  - web-development
+  - java spring
+  - docker
+---
+
+## What is Portrait?
+Portrait is a low-code platform for building flexible and dynamic web applications to display, search, filter, and even
+modify existing datasets – all in one place!
+
+The basic idea is providing a framework that allows users to create their own web applications via
+a graphical user interface and some YAML configuration files.
+We provide a set of customizable components (list, graph or map views or forms) and connectors to different
+data sources, like SQL databases or the ECM system ELO.
+In addition, we allow more advanced users to directly access the data via a REST API. In addition, we provide a python
+runtime environment to allow users to write run custom python code including custom dependencies.
+
+The target audience are mostly users with domain specific knowledge who are not familiar with programming but have a
+basic understanding of technical concepts, like JSON or YAML. However, by providing a REST API and a python runtime
+more advanced users can also use Portrait to build their own applications.
+
+More information can be found on the [official website](https://portrait.app/) and in [docs](https://docs.portrait.app/).
+
+## Contribution
+
+Portrait is my main project during my employment at Treskon GmbH. I am responsible for the development of the backend and
+infrastructure.
+
+The project consists of multiple docker containers that are orchestrated by docker-compose for easy deployment and low
+requirements for the IT infrastructure. The components are:
+
+* The backend is written in Java using the Spring framework.
+* As main datastore we use elasticsearch instance.
+* The frontend is written in React.
+* A python runtime environment is used to execute custom python code.
+* Nginx is used as a reverse proxy.
+
