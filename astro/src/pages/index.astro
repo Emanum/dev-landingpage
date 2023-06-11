@@ -9,7 +9,9 @@ import { TypeAnimation } from 'react-type-animation';
 
 // Data Fetching: List all Markdown posts in the repo.
 const projects = await Astro.glob('./project/**/*.md*');
+const articles = await Astro.glob('./article/**/*.md*');
 const featuredProject = projects[0];
+const featuredArticle = articles[0];
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
@@ -92,7 +94,7 @@ const featuredProject = projects[0];
 				grid-gap: 2rem;
 
 				@media (min-width: 1200px) {
-					grid-template-columns: 2fr 1fr;
+					grid-template-columns: 1fr 1fr;
 				}
 			}
 
@@ -221,18 +223,28 @@ const featuredProject = projects[0];
 		<main class="wrapper mt4 mb4">
 			<div class="grid">
 				<div class="section">
-					<h3 class="sectionTitle">Selected Work</h3>
+					<h3 class="sectionTitle">Projects</h3>
 					<PortfolioPreview project={featuredProject} />
 					<div class="tac mt4">
 						<a href="/projects">
 							<Button>View All Projects</Button>
 						</a>
 					</div>
+
+				</div>
+				<div class="section">
+					<h3 class="sectionTitle">Articles</h3>
+					<PortfolioPreview project={featuredArticle} />
+					<div class="tac mt4">
+						<a href="/articles">
+							<Button>View All Articles</Button>
+						</a>
+					</div>
 				</div>
 				<div class="section">
 					<h3 class="sectionTitle">About me</h3>
 					<p class="bio">
-						<span>Welcome!</span> My name is Manuel Eiweck, Software Developer and Visual Computing Master Student at TU Vienna. 
+						<span>Welcome!</span> My name is Manuel Eiweck, Software Developer and Visual Computing Master Student at TU Vienna.
 					</p>
 					<p>
 						<a href="/about">Read more</a>
