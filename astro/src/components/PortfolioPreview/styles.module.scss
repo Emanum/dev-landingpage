@@ -20,6 +20,9 @@
 	font-weight: 900;
 	text-transform: uppercase;
 	letter-spacing: 0.0625em;
+	text-align: center;
+	// make sure the title is visible by background
+	background: rgba(0, 0, 0, 0.25);
 }
 
 .titleCard {

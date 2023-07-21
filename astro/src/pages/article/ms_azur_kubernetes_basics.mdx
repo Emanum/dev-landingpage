@@ -1,0 +1,253 @@
+---
+layout: ../../layouts/article.astro
+title: Basics of Kubernetes with Microsoft Azure Kubernetes Service 
+img: /assets/azurbasics/banner1.png
+publishDate: 2023-07-21
+description: |
+  Recently I made my first experiences with Kubernetes on Microsoft Azure. In this article I want to share my experiences, but keep in mind that I am a beginner in this topic.
+tags:
+  - infrastructure
+  - kubernetes
+  - tutorial
+---
+
+## Prerequisites
+
+Microsoft Azure offers a free account 30 days and 200$ credit. In addition, students also get discounts.
+In this article I used the basic 30 days free account.
+
+## Setup Kubernetes Cluster
+
+After you log in to your Azure account, you can create a new 
+Azure Kubernetes Service (AKS) ressouce. 
+You can find it in the Azure Portal under "Create a resource" and then search for "Kubernetes Service".
+I used mostly the default settings, however you can switch the AKS pricing tier to "Free". For testing this is sufficient and you can save more of your free credits for actual ressouces. Keep in mind that only the Kubernetes "overhead" is free, the actual kubernetes nodes itself are billed as normal virtual machines.
+
+## Connect to Kubernetes Cluster
+
+After the cluster is created, you can create a kubectl config file to connect to the cluster. Go to your created AKS ressource, to Overview and click on "Connect". Then choose Open in Cloud Shell. This will open a new linux shell in your browser. Now you can download the kubectl config file with the following command:
+
+```bash
+az account set --subscription 4a7...
+az aks get-credentials --resource-group ... --name ...
+# Should output something like this:
+# Merged "PortraitTest" as current context in /home/manuel/.kube/config
+cat /home/manuel/.kube/config
+```
+
+Aftwards you can copy the content of the config file to your local kubectl config file. On Linux this is usually located at `~/.kube/config`.
+However you can put it wherever you want and call the kubectl command with the `--kubeconfig` parameter, e.g `kubectl --kubeconfig /home/manuel/myconfig.yaml get pods`.
+
+To connect with the cluster install the kubectl command line tool. Depening on your distro you can install it with your package manager. 
+There are also various GUIs and IDE integrations for IntelliJ, VS Code, etc.
+I personally use the IntelliJ plugin, which works great. You can just install the plugin and point it to your downloaded config file.
+
+## Kubernetes 101
+
+If you are familar with docker compose, kubernetes deployments are quite similar. You also have a yaml file where you define different containers and their configuration. However with kubernetes you can have multiple yaml files, which are separated started. Started on kubernetes usually means 'apply' the configuration to the cluster. So you basically request a specific state, e.g. one running container of nginx with a set of env variables, and kubernetes will try to apply it. 
+
+Some basic shargon you should know:
+ * Pod: A pod is a group of one or more containers, with shared storage/network, and a specification for how to run the containers. A pod is the smallest deployable unit of computing that can be created and managed in Kubernetes.
+ * Deployment: A deployment provides declarative updates for Pods and ReplicaSets. You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.
+ * Service: An abstract way to expose an application running on a set of Pods as a network service. With Kubernetes you don't need to modify your application to use an unfamiliar service discovery mechanism. Kubernetes gives Pods their own IP addresses and a single DNS name for a set of Pods, and can load-balance across them.
+ * Ingress: Ingress is the 'reverse proxy' usually nginx of kubernetes. An Ingress API object that manages external access to the services in a cluster, typically HTTP. Ingress may provide load balancing, SSL termination and name-based virtual hosting.
+
+Each of these objects is called a kubernetes resource. The usual connection between these objects is service (backend/frontend/database ) -> deployment(what docker image to use, list of env variables, how many replicas, etc) -> pod (actual running instance of a container).
+All services communicate with each other via the servics names.
+Example: When you configure your database url in your backend you use the service name of the database, kubernetes then automatically resolves the correct internal IP address of the currently running database pod.
+
+## Deploying an application
+
+I used [Vaultwarden](www.github.com/dani-garcia/vaultwarden) as an example application. It is a open source backend for the bitwarden password manager.
+You can have multiple ressources in a single YAML file by separating them with `---`.
+
+A simple configuration can look like this. We have a 1:1 relation between our service and deployment. 
+
+``` yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: vaultwarden-staging
+  labels:
+    app: vaultwarden-staging
+spec:
+  selector:
+    app: vaultwarden-staging
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden-staging
+  labels:
+    app: vaultwarden-staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vaultwarden-staging
+  template:
+    metadata:
+      labels:
+        app: vaultwarden-staging
+    spec:
+      volumes:
+        - name: vaultwarden-staging-pvc
+          persistentVolumeClaim:
+            claimName: vaultwarden-staging-pvc
+      containers:
+        - name: vaultwarden-staging
+          image: vaultwarden/server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /data
+              name: vaultwarden-staging-pvc
+          env:
+            - name: DOMAIN
+              value: https://azur.emanum.dev/
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vaultwarden-staging-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: managed-csi
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+The MS Azur specific part here is how the PersistentVolumeClaim is configured. 
+The storageClassName is set to `managed-csi` which is specific to Azure. In general you can set here what type storage you want to consume, e.g SSD/HDD, redundancy different vendor offer different storage classes. However, as an application developer I do not care about the underlying storage, thats why I just write a volume "claim", where the storage actually is the job of kubernetes (admin).
+
+In addition, ReadWriteOnce is important as MS Azur does not support ReadWriteMany. Once means one NODE can mount the volume at the same time.
+
+I recommend to create a separated namespace so you can clean up your resources easily. You can create a namespace with `kubectl create namespace vaultwarden`. (Cleanup afterwards with `kubectl delete namespace vaultwarden`)
+Then we can deploy our application with `kubectl --namespace vaultwarden apply -f vaultwarden.yaml`.
+
+Afterwards you can check the status of your deployment with `kubectl --namespace vaultwarden get pods` and `kubectl --namespace vaultwarden get services`. Or you can also use the MS Azur Portal to check the status of your deployment. Go to your AKS ressource, Workloads and then select your namespace.
+
+You should a running pod. If you click on the pod you can see the logs of the container. If you see an error, you can also use `kubectl --namespace vaultwarden describe pod <podname>` to get more information about the error.
+
+However we cannot access our application yet. We need to an reverse proxy to expose our application to the internet. For this we can use ingress.
+
+## Expose application with Ingress
+
+First we need to install the ingress controller. 
+You can follow these [GUIDE] (https://learn.microsoft.com/en-us/azure/aks/ingress-basic?tabs=azure-cli)
+
+For this we can use the helm package manager. Helm is a package manager for kubernetes. It is similar to apt or yum on linux. You can install helm LOCALLY with your package manager.
+
+```bash
+# Add the ingress-nginx repository
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+# Install the ingress-nginx chart
+helm --kubeconfig azurEmanumPortraitTestConfig.txt install ingress-nginx ingress-nginx/ingress-nginx \  
+  --create-namespace \
+  --namespace ingress-basic \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz
+```
+
+The simplest way is to use a dynamic public IP address [details] (https://learn.microsoft.com/en-us/azure/aks/ingress-tls?tabs=azure-cli#use-a-dynamic-public-ip-address). According to the MS docs "An Azure public IP address is created for your ingress controller upon creation. The public IP address is static for the lifespan of your ingress controller. The public IP address doesn't remain if you delete your ingress controller. If you create a new ingress controller, it will be assigned a new public IP address."
+
+```bash
+# Get the public IP address for your ingress controller
+
+kubectl --namespace ingress-basic get services -o wide -w nginx-ingress-ingress-nginx-controller
+
+# Sample output
+
+NAME                                     TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)                      AGE   SELECTOR
+nginx-ingress-ingress-nginx-controller   LoadBalancer   10.0.74.133   EXTERNAL_IP     80:32486/TCP,443:30953/TCP   44s   app.kubernetes.io/component=controller,app.kubernetes.io/instance=nginx-ingress,app.kubernetes.io/name=ingress-nginx
+```
+
+Your cluster is reachable via the EXTERNAL-IP. If you have a domain you can create a DNS record to point to this IP address. It is highly recommended to use HTTPS, which only works with a domain.
+
+## HTTPS with Let's Encrypt
+
+To use free TLS certificates from Let's Encrypt you have to install [cert-manager] (https://learn.microsoft.com/en-us/azure/aks/ingress-tls?tabs=azure-cli#install-cert-manager).
+
+
+```bash
+kubectl label namespace ingress-basic cert-manager.io/disable-validation=true
+# Add the Jetstack Helm repository
+helm repo add jetstack https://charts.jetstack.io
+# Update your local Helm chart repository cache
+helm repo update
+
+helm --kubeconfig azurEmanumPortraitTestConfig.txt install cert-manager jetstack/cert-manager \         
+  --namespace ingress-basic \
+  --version=$CERT_MANAGER_TAG \
+  --set installCRDs=true \
+  --set nodeSelector."kubernetes\.io/os"=linux
+```
+
+Then you can create a certificate issuer. This is a configuration for cert-manager to know where to get the certificates from. 
+
+```yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: MY_EMAIL_ADDRESS
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+          podTemplate:
+            spec:
+              nodeSelector:
+                "kubernetes.io/os": linux
+
+```
+
+You can apply this configuration with `kubectl --namespace ingress-basic apply -f issuer.yaml`.
+
+For the last step you can create your ingress ressource for your application. Vaultwarden in this example.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vaultwarden-staging-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - azur.emanum.dev
+      secretName: tls-secret
+  rules:
+    - host: azur.emanum.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vaultwarden-staging
+                port:
+                  number: 80
+```
+
+Apply this configuration with `kubectl --namespace vaultwarden apply -f ingress.yaml`.
+
+If you encounter any errors, you can check the logs of cert-manager with `kubectl --namespace ingress-basic logs -l app.kubernetes.io/name=cert-manager`.
+
+When everything works you should be able to access your application via HTTPS for your configured domain.
