@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/project.astro
+title: Stable Style Transfer
+publishDate: 2024-02-27
+img: /assets/stableStyleTransfer/cover2.jpeg
+description: |
+    Developed during my masters degree. My motivation was to build an easy-to-use open source solution to transfer
+    a photo to different art style while preserving the content. The project was built using stable diffusion and
+    model.com cloud lambda functions.
+
+tags:
+  - AI
+  - generative image synthesis
+  - stable diffusion
+  - cloud lambda functions
+---
+
+## Stable Style Transfer
+
+The result of the project is a web-application that runs a lamda function on model.com to perform a style transfer.
+The user can upload an image and select a style from a list of pre-trained models. In addition, the user can also
+provide an optional prompt to guide the style transfer. While it is hosted on a free cloud service due to cost reasons,
+it can also be run locally. You can try out the live demo right now [here](https://emanum--stable-style-transfer-app.modal.run/).
+
+While obviously not as powerful and flexible as the commercial products, I
+believe that a product that fulfills a specific purpose and is easy to use can be a good alternative to full
+grade commercial products.
+
+### Motivation
+
+The motivation for the project was to only use libraries that are open source and also available for self-hosting
+to stylize an image with different art styles. Stable Diffusion was a perfect candidate as it offers a broad
+community support and comes with various pre trained models as well as tools and libraries. However, due
+to the large available extensions and customizing options it is not really beginner friendly, especially
+compared to its commercial counterparts like Dall-E or Midjourney. Therefore, the goal of the project was
+to create an easy-to-use application that would also allow non tech enthusiasts to perform an image style
+transfer without having to rely of proprietary commercial services.
+
+![Stable Style Transfer](/assets/stableStyleTransfer/goal.jpg)
+
+### Project Steps
+
+There were 3 main milestones along the project.
+1. Research and gathering experience
+Using Automatic1111/web-ui I tried out various extensions like controlNet, adapters, LoRA, Img2Img and
+settings to perform the style transfer as a proof on concept. Gathered knowledge was summarized on a
+private confluence space.
+2. Building a pipeline
+After the successful PoC I started to perform the style transfer programmatically via the diffusers library
+from huggingface. Using the previous gathered knowledge about the needed extensions.
+3. Building a UI
+Afterwards I started to build a simple mobile friendly web-ui. In addition, I switch from running stable
+diffusion locally on my pc to the cloud service modal.com due to performance and gpu memory limitations.
+A nice bonus was that it also allowed me to also host the web-ui on the same platform in one go without
+having to configure another service.
+
+
+### Cloud Runtime
+
+I choose modal.com as a cloudruntime for the project. During my experiments running stable diffusion locally on my 3070
+I encountered performance and memory limitations. Therefore, I decided to try out cloud services. I choose modal.com
+as it offers a free tier with 30 dollars of free credits each month.
+
+In addition, the development workflow was very smooth. You can simply clone one of their example projects edit them and
+then directly deploy them to the cloud with a single command without building a docker image or packaging the
+application otherwise.
+
+They also provide a nice web-ui to monitor the usage, costs and logs of your deployed applications.
+
+#img modalpreview
+![Modal.com](/assets/stableStyleTransfer/modalpreview.png)
+
+### Code and Demo
+
+The code is hosted on [Github](https://github.com/Emanum/stable-style-transfer)
+
+To view the live demo in action click on the image below.
+[![Stable Style Transfer](/assets/stableStyleTransfer/slide2.jpeg)](https://emanum--stable-style-transfer-app.modal.run/)
+
+

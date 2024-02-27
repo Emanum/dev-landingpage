@@ -53,14 +53,18 @@
 	--t-bg: var(--c-white);
 	--t-subdue: var(--c-gray);
 	--t-active: var(--c-blue);
+
+	--t-bg-blend: rgba(0, 0, 0, 0.5);
+
 }
 
 // Base
 
 body {
 	margin: 0;
-	color: var(--t-fg);
+	color: var(--t-bg);
 	font-family: 'Inter', 'system-ui', sans-serif;
+	background-color: var(--t-fg);
 }
 
 * {

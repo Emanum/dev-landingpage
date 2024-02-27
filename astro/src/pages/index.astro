@@ -10,7 +10,7 @@ import { TypeAnimation } from 'react-type-animation';
 // Data Fetching: List all Markdown posts in the repo.
 const projects = await Astro.glob('./project/**/*.md*');
 const articles = await Astro.glob('./article/**/*.md*');
-const featuredProject = projects[1];
+const featuredProject = projects[3];
 const featuredArticle = articles[1];
 
 // Full Astro Component Syntax:
@@ -43,7 +43,7 @@ const featuredArticle = articles[1];
 
 			.gradient,
 			.gradient2 {
-				background-image: url('/assets/mesh-gradient.jpg');
+				background-image: url('/assets/mesh-gradient-darkblue.png');
 				background-size: cover;
 				pointer-events: none;
 				mix-blend-mode: screen;
@@ -83,6 +83,7 @@ const featuredArticle = articles[1];
 				font-size: var(--f-u8);
 				margin-bottom: 0.5rem;
 				margin-top: 0;
+				color: var(--t-bg);
 
 				@media (min-width: $w-s) {
 					font-size: var(--f-u12);
@@ -110,9 +111,10 @@ const featuredArticle = articles[1];
 				display: inline-block;
 				font-weight: 900;
 				color: var(--t-bg);
-				background-color: var(--t-fg);
+				background-color: var(--t-bg-blend);
 				padding: 0.25em 0.5em;
 				z-index: 2;
+				border-radius: 0.5em;
 
 				@media (min-width: $w-s) {
 					font-size: var(--f-u3);
@@ -166,6 +168,10 @@ const featuredArticle = articles[1];
 				font-size: var(--f-u2);
 				margin-top: 1.5rem;
 				margin-bottom: 0;
+				color: var(--t-bg);
+				background-color:  var(--t-bg-blend);
+				border-radius: 0.5em;
+				padding: 0.25em 0.5em;
 			}
 
 			.subtitle {
