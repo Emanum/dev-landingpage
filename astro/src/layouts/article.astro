@@ -4,7 +4,7 @@ import Button from '../components/Button/index.jsx';
 import Footer from '../components/Footer/index.jsx';
 import Nav from '../components/Nav/index.jsx';
 
-const { content } = Astro.props;
+const { frontmatter: content } = Astro.props;
 ---
 
 <html lang={content.lang || 'en'}>

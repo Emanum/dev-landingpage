@@ -4,7 +4,12 @@ import Footer from '../components/Footer/index.jsx';
 import Nav from '../components/Nav/index.jsx';
 import PortfolioPreview from '../components/PortfolioPreview/index.jsx';
 
-const projects = (await Astro.glob('./project/**/*.md*'))
+const projectFiles = import.meta.glob('./project/**/*.md*', { eager: true });
+const projects = Object.values(projectFiles)
+	.map((mod) => ({
+		frontmatter: mod.frontmatter,
+		url: mod.url,
+	}))
 	.filter(({ frontmatter }) => !!frontmatter.publishDate)
 	.sort(
 		(a, b) =>

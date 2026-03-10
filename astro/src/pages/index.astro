@@ -8,8 +8,16 @@ import PortfolioPreview from '../components/PortfolioPreview/index.jsx';
 import { TypeAnimation } from 'react-type-animation';
 
 // Data Fetching: List all Markdown posts in the repo.
-const projects = await Astro.glob('./project/**/*.md*');
-const articles = await Astro.glob('./article/**/*.md*');
+const projectFiles = import.meta.glob('./project/**/*.md*', { eager: true });
+const projects = Object.values(projectFiles).map((mod) => ({
+	frontmatter: mod.frontmatter,
+	url: mod.url,
+}));
+const articleFiles = import.meta.glob('./article/**/*.md*', { eager: true });
+const articles = Object.values(articleFiles).map((mod) => ({
+	frontmatter: mod.frontmatter,
+	url: mod.url,
+}));
 const featuredProject = projects[3];
 const featuredArticle = articles[1];
 
